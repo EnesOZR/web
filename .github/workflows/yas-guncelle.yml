@@ -1,0 +1,45 @@
+name: Yaşı ve yılı güncelle
+
+# JavaScript kapalı olsa bile sitede doğru yaş ve yıl görünsün diye
+# index.html içindeki değerler her gece Türkiye saatiyle 00:05'te güncellenir.
+on:
+  schedule:
+    - cron: '5 21 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+jobs:
+  guncelle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Yaşı ve yılı hesapla, HTML'e yaz
+        run: |
+          export TZ=Europe/Istanbul
+          yil=$(date +%Y)
+          ay_gun=$(date +%m%d)
+          yas=$((yil - 2004))
+          if [ $((10#$ay_gun)) -lt 412 ]; then yas=$((yas - 1)); fi
+          echo "Bugün: $(date +%F)  Yaş: $yas  Yıl: $yil"
+          sed -i -E \
+            -e "s|(<span id=\"age\">)[0-9]+(</span>)|\1${yas}\2|" \
+            -e "s|(<span id=\"currentYear\">)[0-9]+(</span>)|\1${yil}\2|" \
+            index.html
+
+      - name: Değiştiyse kaydet ve siteyi yeniden yayınla
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet; then
+            echo "Değişiklik yok."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Yaş/yıl otomatik güncellendi"
+          git push
+          gh api -X POST "repos/${{ github.repository }}/pages/builds" || true
