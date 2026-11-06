@@ -608,8 +608,8 @@
 
         .intro footer { opacity: 0; }
 
-        /* Animasyon bitene kadar görünmeyen öğeler tıklanamasın */
-        .intro main, .intro footer { pointer-events: none; }
+        /* Animasyonda henüz çizilmemiş (görünmeyen) öğeler tıklanamasın; çizilen anında tıklanabilir */
+        .intro [data-step]:not(.shown), .intro footer { pointer-events: none; }
 
         .intro .avatar:not(.shown)::before,
         .intro .avatar:not(.shown)::after { opacity: 0; }
@@ -695,7 +695,9 @@
                 background: linear-gradient(transparent, var(--line-2), transparent);
             }
             .intro .card:not(.shown)::before { opacity: 0; }
-            .avatar { width: clamp(120px, 26vh, 200px); margin-top: 8px; }
+            .avatar { width: clamp(120px, 26vh, 200px); margin-top: 8px; margin-bottom: clamp(12px, 2.4vh, 22px); }
+            .name { margin-bottom: 0; }
+            .role { align-self: flex-start; }
             .name { font-size: clamp(2rem, 6vh, 2.9rem); }
             .content { text-align: left; }
             .bio { font-size: clamp(0.82rem, 2.1vh, 1rem); max-width: none; align-self: stretch; }
@@ -734,11 +736,10 @@
             </div>
 
             <h1 class="name split" id="name" data-layer="Text · Başlık">Enes <span class="nick">'oz3R'</span> Özer</h1>
-            <p class="role split" id="role" data-layer="Text · Alt başlık">Benim Hakkımda</p>
-
             </div>
 
             <div class="content">
+            <p class="role split" id="role" data-layer="Text · Alt başlık">Benim Hakkımda</p>
             <p class="bio split" id="bio" data-layer="Text · Açıklama">
                 Merhaba, ben <b>Enes</b>. <b><span id="age">22</span></b> yaşındayım. Bilgisayar programcılığı ve veritabanı alanında eğitim aldım. Arama motoru eklentileri ve yapay zeka temelli kod biçimlerini analiz ederek yazılım alanındaki bakış açımı genişletmeye çalışıyorum. Sürekli öğrenmeye ve gelişmeye açık biriyim.
             </p>
@@ -756,7 +757,7 @@
                         <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.650.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-2.67-.296-5.568.628-6.383 3.364C.378 17.703 0 22.663 0 23.353c0 .688.139 1.86.902 2.202.659.299 1.664.621 4.3-1.24 2.752-1.942 5.711-5.881 6.798-7.995 1.087 2.114 4.046 6.053 6.798 7.995 2.636 1.861 3.641 1.539 4.3 1.24.763-.342.902-1.514.902-2.202 0-.69-.378-5.65-.624-6.479-.815-2.736-3.713-3.66-6.383-3.364-.139.016-.277.034-.415.056.138-.017.276-.036.415-.056 2.67.296 5.568-.628 6.383-3.364.246-.829.624-5.789.624-6.479 0-.688-.139-1.86-.902-2.202-.659-.299-1.664-.621-4.3 1.240-2.752 1.942-5.711 5.881-6.798 7.995z"/></svg>
                     </a>
                     <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn" data-step title="YouTube" aria-label="YouTube">
-                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.070 0 12 0 12s0 3.930.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.930 24 12 24 12s0-3.930-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                     </a>
                     <a href="#" target="_blank" rel="noopener noreferrer" class="social-btn" data-step title="Kick" aria-label="Kick">
                         <svg viewBox="0 0 512 512" fill="currentColor" aria-hidden="true"><path d="M37 .036h164.448v113.621h54.71v-56.82h54.731V.036h164.448v170.777h-54.73v56.82h-54.711v56.8h54.71v56.82h54.73V512.03H310.89v-56.82h-54.73v-56.8h-54.711v113.62H37V.036z"/></svg>
