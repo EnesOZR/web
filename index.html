@@ -14,7 +14,7 @@
         :root {
             --bg: #07090a;
             --bg-2: #0d1112;
-            --card: rgba(18, 22, 24, 0.72);
+            --card: rgba(16, 20, 22, 0.9);
             --line: rgba(255, 255, 255, 0.09);
             --line-2: rgba(255, 255, 255, 0.18);
             --text: #f2f5f3;
@@ -29,16 +29,16 @@
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html { overflow-x: clip; }
+        html { overflow: hidden; height: 100%; }
 
         body {
             position: relative;
-            min-height: 100vh;
-            min-height: 100dvh;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
             font-family: var(--mono);
             background: var(--bg);
             color: var(--text);
-            overflow-x: clip;
             -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
@@ -106,11 +106,16 @@
 
         .mouse-glow {
             position: fixed;
-            inset: 0;
+            left: -520px;
+            top: -520px;
+            width: 1040px;
+            height: 1040px;
             z-index: 1;
             pointer-events: none;
             opacity: 0;
+            background: radial-gradient(circle closest-side, rgba(134, 239, 172, 0.09), transparent);
             transition: opacity 0.6s ease;
+            will-change: transform;
         }
 
         /* ---------- Ana düzen ---------- */
@@ -118,15 +123,19 @@
             position: relative;
             z-index: 5;
             flex: 1;
+            min-height: 0;
             display: grid;
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-columns: minmax(0, 1fr);
             place-items: center;
-            padding: clamp(40px, 8vh, 88px) 16px 24px;
+            padding: clamp(10px, 3vh, 48px) 16px 0;
         }
 
         .card {
             position: relative;
             width: min(600px, 100%);
-            padding: clamp(28px, 6vw, 52px) clamp(18px, 5vw, 48px) clamp(26px, 5vw, 40px);
+            padding: clamp(16px, 3.4vh, 40px) clamp(16px, 5vw, 48px);
+            transform-origin: center center;
             border-radius: var(--radius);
             background: var(--card);
             border: 1px solid var(--line-2);
@@ -134,8 +143,6 @@
                 0 1px 0 rgba(255, 255, 255, 0.06) inset,
                 0 30px 80px -20px rgba(0, 0, 0, 0.8),
                 0 0 0 1px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -150,36 +157,13 @@
             width: 100%;
         }
 
-        .card-badge {
-            position: absolute;
-            top: 16px;
-            left: 18px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        .card-badge i {
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: var(--accent);
-            box-shadow: 0 0 0 4px var(--accent-dim), 0 0 12px var(--accent);
-            animation: pulse 2.4s ease-in-out infinite;
-        }
-
-        @keyframes pulse { 50% { box-shadow: 0 0 0 7px transparent, 0 0 18px var(--accent); } }
-
         /* Avatar */
         .avatar {
             position: relative;
-            width: clamp(128px, 34vw, 184px);
+            width: clamp(72px, min(34vw, 19vh), 184px);
             aspect-ratio: 1;
-            margin-bottom: 24px;
-            margin-top: 22px;
+            margin-bottom: clamp(10px, 2.6vh, 24px);
+            margin-top: clamp(4px, 1.6vh, 22px);
         }
 
         .avatar::before {
@@ -220,10 +204,10 @@
         .name {
             font-family: var(--display);
             font-weight: 700;
-            font-size: clamp(2rem, 8vw, 3.4rem);
+            font-size: clamp(1.45rem, min(8vw, 5.4vh), 3.4rem);
             line-height: 1.05;
             letter-spacing: -0.03em;
-            margin-bottom: 10px;
+            margin-bottom: clamp(4px, 1vh, 10px);
         }
 
         .name .nick {
@@ -238,15 +222,15 @@
             color: var(--muted);
             letter-spacing: 0.22em;
             text-transform: uppercase;
-            margin-bottom: 18px;
+            margin-bottom: clamp(8px, 2vh, 18px);
         }
 
         .bio {
             max-width: 46ch;
-            font-size: clamp(0.88rem, 2.6vw, 0.98rem);
-            line-height: 1.75;
+            font-size: clamp(0.74rem, min(3.6vw, 2.05vh), 0.98rem);
+            line-height: 1.65;
             color: #cfd6d2;
-            margin-bottom: 28px;
+            margin-bottom: clamp(14px, 2.8vh, 28px);
             transition: opacity 0.6s ease;
         }
 
@@ -256,11 +240,11 @@
         .socials {
             position: relative;
             width: 100%;
-            padding: 22px 12px 16px;
+            padding: clamp(14px, 2.4vh, 22px) 12px clamp(10px, 1.8vh, 16px);
             border-radius: 16px;
             border: 1px solid var(--line-2);
             background: rgba(255, 255, 255, 0.025);
-            margin-bottom: 22px;
+            margin-bottom: clamp(12px, 2.4vh, 22px);
             transition: border-color 0.5s ease, background 0.5s ease;
         }
 
@@ -290,7 +274,7 @@
         .social-btn {
             display: grid;
             place-items: center;
-            width: clamp(44px, 12vw, 50px);
+            width: clamp(36px, min(12vw, 6.2vh), 50px);
             aspect-ratio: 1;
             border-radius: 14px;
             border: 1px solid var(--line-2);
@@ -320,11 +304,12 @@
             justify-content: center;
             gap: 10px;
             width: min(100%, 320px);
-            padding: 15px 22px;
+            padding: clamp(10px, 1.8vh, 15px) 22px;
             border-radius: 14px;
             font-family: var(--mono);
             font-weight: 700;
-            font-size: 15px;
+            font-size: clamp(12.5px, 3.9vw, 15px);
+            white-space: nowrap;
             text-decoration: none;
             color: #04130a;
             background: linear-gradient(135deg, var(--accent-2), var(--accent));
@@ -354,15 +339,6 @@
 
         @keyframes shine { 0%, 70% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
 
-        .mail-text {
-            margin-top: 12px;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .mail-text a { color: var(--accent); text-decoration: none; }
-        .mail-text a:hover { text-decoration: underline; }
-
         /* Footer */
         footer {
             position: relative;
@@ -372,8 +348,10 @@
             align-items: center;
             justify-content: center;
             gap: 10px 18px;
-            padding: 8px 16px calc(22px + env(safe-area-inset-bottom));
-            font-size: 12px;
+            flex: none;
+            min-height: calc(64px + env(safe-area-inset-bottom));
+            padding: 6px 16px env(safe-area-inset-bottom);
+            font-size: 11px;
             color: var(--muted);
             text-align: center;
             transition: opacity 0.6s ease;
@@ -384,7 +362,7 @@
             position: fixed;
             z-index: 60;
             left: 50%;
-            bottom: calc(16px + env(safe-area-inset-bottom));
+            bottom: calc(8px + env(safe-area-inset-bottom));
             transform: translate(-50%, 140%);
             display: flex;
             align-items: center;
@@ -581,14 +559,9 @@
             background: transparent;
             border-color: transparent;
             box-shadow: none;
-            backdrop-filter: none;
-            -webkit-backdrop-filter: none;
         }
 
-        .intro .card-badge,
         .intro footer { opacity: 0; }
-
-        .intro .card.shown .card-badge { opacity: 1; transition: opacity 0.6s ease 0.3s; }
 
         .intro .avatar:not(.shown)::before,
         .intro .avatar:not(.shown)::after { opacity: 0; }
@@ -606,8 +579,8 @@
         .ch.ink { animation: ink 0.7s ease-out; }
 
         @keyframes ink {
-            0% { opacity: 0; color: var(--accent); text-shadow: 0 0 10px var(--accent); filter: blur(1.5px); }
-            35% { opacity: 1; color: var(--accent-2); filter: blur(0); }
+            0% { opacity: 0; color: var(--accent); }
+            35% { opacity: 1; color: var(--accent-2); }
             100% { opacity: 1; }
         }
 
@@ -629,8 +602,6 @@
             from { clip-path: inset(0 100% 0 0 round 14px); }
             to { clip-path: inset(0 0 0 0 round 14px); }
         }
-
-        .bio[data-step].shown, .mail-text.shown { transition: opacity 0.6s ease; }
 
         /* ---------- Animasyon sonrası "inspect" efekti ---------- */
         .inspect {
@@ -658,14 +629,14 @@
         }
 
         /* ---------- Responsive ---------- */
-        @media (min-width: 960px) {
+        @media (min-width: 960px), (min-width: 740px) and (orientation: landscape) and (max-height: 560px) {
             .card {
                 width: min(1000px, 100%);
                 display: grid;
                 grid-template-columns: 320px 1fr;
                 align-items: center;
                 column-gap: 56px;
-                padding: 64px 56px 52px;
+                padding: clamp(32px, 5.5vh, 52px) 56px;
             }
             .card::before {
                 content: '';
@@ -676,12 +647,11 @@
                 background: linear-gradient(transparent, var(--line-2), transparent);
             }
             .intro .card:not(.shown)::before { opacity: 0; }
-            .avatar { width: 200px; margin-top: 8px; }
-            .name { font-size: 2.9rem; }
-            .content { align-items: flex-start; text-align: left; }
-            .bio { font-size: 1rem; max-width: none; }
-            .cta { width: auto; }
-            .mail-text { align-self: flex-start; }
+            .avatar { width: clamp(120px, 26vh, 200px); margin-top: 8px; }
+            .name { font-size: clamp(2rem, 6vh, 2.9rem); }
+            .content { text-align: left; }
+            .bio { font-size: clamp(0.82rem, 2.1vh, 1rem); max-width: none; align-self: stretch; }
+            .cta { width: auto; min-width: 280px; }
         }
 
         @media (max-width: 560px) {
@@ -691,15 +661,10 @@
 
         @media (max-width: 380px) {
             .tb-status { display: none; }
-            .card-badge { font-size: 10px; }
         }
 
         @media (max-width: 640px) {
             .ruler { display: none; }
-        }
-
-        @media (min-height: 900px) and (min-width: 900px) {
-            main { padding-top: 40px; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -715,8 +680,6 @@
 
     <main>
         <section class="card" id="card" data-layer="Frame · Kart">
-            <div class="card-badge"><i></i>Yeni projelere açık</div>
-
             <div class="side">
             <div class="avatar" id="avatar" data-layer="Ellipse · Avatar">
                 <img src="avatar.jpg" alt="Enes Özer'in profil fotoğrafı" width="864" height="864">
@@ -757,7 +720,6 @@
                 Benimle İletişime Geç
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
             </a>
-            <p class="mail-text" id="mailText" data-step><a href="mailto:enesozer.contact@gmail.com">enesozer.contact@gmail.com</a></p>
             </div>
         </section>
     </main>
@@ -843,12 +805,28 @@
         }
         $$('.split').forEach(split);
 
+        /* ---------- Tek ekrana sığdır ---------- */
+        const mainEl = $('main');
+        const cardEl = $('#card');
+        function fit() {
+            cardEl.style.transform = '';
+            const cs = getComputedStyle(mainEl);
+            const availH = mainEl.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom) - 4;
+            const availW = mainEl.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+            const k = Math.min(1, availH / cardEl.offsetHeight, availW / cardEl.offsetWidth);
+            if (k < 1) cardEl.style.transform = `scale(${k})`;
+        }
+        fit();
+        window.addEventListener('resize', fit);
+        if (document.fonts) document.fonts.ready.then(fit);
+        window.addEventListener('load', fit);
+
         /* ---------- Fare parıltısı ---------- */
         const glow = $('#glow');
         window.addEventListener('pointermove', (e) => {
             if (e.pointerType !== 'mouse') return;
             glow.style.opacity = '1';
-            glow.style.background = `radial-gradient(520px at ${e.clientX}px ${e.clientY}px, rgba(134, 239, 172, 0.09), transparent 80%)`;
+            glow.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
         }, { passive: true });
 
         /* ---------- Çizim motoru ---------- */
@@ -887,20 +865,11 @@
             return { x: r.left + scrollX, y: r.top + scrollY, w: r.width, h: r.height };
         }
 
-        function follow() {
-            if (skipping) return;
-            const vy = cy - scrollY;
-            const bottomLimit = innerHeight - 120;
-            if (vy > bottomLimit) window.scrollTo(0, cy - bottomLimit);
-            else if (vy < 60 && scrollY > 0) window.scrollTo(0, Math.max(0, cy - 60));
-        }
-
         // İmlecin "uç" noktası: fare oku için sol üst, kalem için mürekkep ucu
         let hot = [3, 2];
         function setCursor(x, y) {
             cx = x; cy = y;
             cursor.style.transform = `translate(${x - hot[0]}px, ${y - hot[1]}px)`;
-            follow();
         }
 
         function penMode(on) {
@@ -920,16 +889,6 @@
                 const q = 1 - p;
                 setCursor(q * q * sx + 2 * q * p * mx + p * p * x, q * q * sy + 2 * q * p * my + p * p * y);
             });
-        }
-
-        async function ensureVisible(el) {
-            if (skipping) return;
-            const r = el.getBoundingClientRect();
-            const top = 70, bottom = innerHeight - 110;
-            if (r.top >= top && r.bottom <= bottom) return;
-            const target = scrollY + r.top - Math.max(top, (innerHeight - r.height) / 2 - 30);
-            window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-            await wait(550);
         }
 
         async function click() {
@@ -959,7 +918,6 @@
 
         async function drag(el, label, { dur = 700, round = false } = {}) {
             clearSel();
-            await ensureVisible(el);
             const b = box(el);
             await moveTo(b.x, b.y, 420);
             cursor.classList.add('down');
@@ -985,7 +943,6 @@
 
         // Kalemle harf harf yazma: harfler mürekkep efektiyle belirir, kalem ucu son harfi takip eder
         async function write(el, dur) {
-            await ensureVisible(el);
             const chars = $$('.ch', el);
             if (!chars.length) return;
             const r0 = chars[0].getBoundingClientRect();
@@ -1013,7 +970,6 @@
 
         async function tapEach(items, dur = 300) {
             for (const it of items) {
-                await ensureVisible(it);
                 const b = box(it);
                 await moveTo(b.x + b.w * 0.55, b.y + b.h * 0.55, dur);
                 await click();
@@ -1050,7 +1006,7 @@
             skipping = false;
             resetStage();
             html.classList.add('intro');
-            window.scrollTo(0, 0);
+            fit();
 
             try { await Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1500))]); } catch (e) {}
             const img = $('img', avatar);
@@ -1078,12 +1034,12 @@
 
             // 3) Başlıklar — kalemle yazılır
             setTool('pen', 'Başlık yazılıyor');
-            await write($('#name'), 1000);
-            await write($('#role'), 550);
+            await write($('#name'), 1700);
+            await write($('#role'), 950);
 
             // 4) Hakkımda metni — kalemle yazılır
             setTool('pen', 'Metin yazılıyor');
-            await write($('#bio'), 3600);
+            await write($('#bio'), 6200);
 
             // 5) Sosyal medya
             setTool('frame', 'Sosyal');
@@ -1099,7 +1055,6 @@
             await drag(cta, 'Button · İletişim', { dur: 450 });
             cta.classList.add('shown');
             await wait(350);
-            $('#mailText').classList.add('shown');
 
             // 7) Bitiş
             setTool('move', 'Tamamlandı ✓');
