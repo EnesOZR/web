@@ -29,13 +29,12 @@
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html { overflow: hidden; height: 100%; }
+        html { height: 100%; }
 
         body {
             position: relative;
-            height: 100vh;
-            height: 100dvh;
-            overflow: hidden;
+            min-height: 100vh;
+            min-height: 100dvh;
             font-family: var(--mono);
             background: var(--bg);
             color: var(--text);
@@ -50,6 +49,14 @@
         }
 
         img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
+
+        /* JS varken tek ekran (kaydırma yok); JS yoksa sayfa normal kaydırılır, hiçbir şey kesilmez */
+        .js, .js body { overflow: hidden; }
+        .js body { height: 100vh; height: 100dvh; }
+        html:not(.js) main { grid-template-rows: auto; }
+
+        /* Yazdırma / PDF'e kaydetme ile içerik alınamasın */
+        @media print { body { display: none !important; } }
 
         a { color: inherit; }
 
@@ -491,6 +498,9 @@
         .sel.text { border-style: dashed; background: rgba(255, 255, 255, 0.03); }
         .sel.text .lbl { top: auto; bottom: -24px; }
         .sel.text .dim { left: auto; right: -1.5px; bottom: -24px; transform: none; }
+        /* Büyük kart çerçevesi: etiketler kenarlardan/araç çubuğundan taşmasın diye içeride */
+        .sel.inner .lbl { top: 8px; left: 8px; }
+        .sel.inner .dim { bottom: 8px; }
 
         .sel .h {
             position: absolute;
@@ -705,12 +715,15 @@
         }
 
         @media (max-width: 560px) {
-            .tb-status { width: 132px; }
-            .tool.opt { display: none; }
+            .toolbar { gap: 2px; padding: 5px; }
+            .tool { width: 30px; height: 30px; border-radius: 9px; }
+            .tool svg { width: 15px; height: 15px; }
+            .tb-sep { margin: 0 2px; }
+            .tb-status { width: 112px; font-size: 11px; padding: 0 6px; }
         }
 
-        @media (max-width: 380px) {
-            .tb-status { display: none; }
+        @media (max-width: 370px) {
+            .tb-status, .tb-sep { display: none; }
         }
 
         @media (max-width: 640px) {
@@ -976,13 +989,13 @@
             return { x: l - pad + scrollX, y: t - pad + scrollY, w: r - l + pad * 2, h: btm - t + pad * 2 };
         }
 
-        async function drag(el, label, { dur = 700, round = false, text = false } = {}) {
+        async function drag(el, label, { dur = 700, round = false, text = false, inner = false } = {}) {
             clearSel();
             const b = text ? textBox(el) : box(el);
             await moveTo(b.x, b.y, 420);
             cursor.classList.add('down');
             const s = document.createElement('div');
-            s.className = 'sel' + (round ? ' round' : '') + (text ? ' text' : '');
+            s.className = 'sel' + (round ? ' round' : '') + (text ? ' text' : '') + (inner ? ' inner' : '');
             s.style.left = b.x + 'px';
             s.style.top = b.y + 'px';
             s.innerHTML = (round ? '<div class="shape"></div>' : '') +
@@ -1074,19 +1087,19 @@
 
             setCursor(innerWidth / 2 + scrollX, scrollY + innerHeight * 0.75);
             toolbar.classList.add('show');
-            setTool('move', 'Yeni dosya');
+            setTool('move', 'Hazırlanıyor');
             await wait(200);
             cursor.classList.add('show');
             await wait(300);
 
             // 1) Ana çerçeve
-            setTool('frame', 'Çerçeve');
-            await drag(card, 'Frame · Kart', { dur: 800 });
+            setTool('frame', 'Kart çiziliyor');
+            await drag(card, 'Frame · Kart', { dur: 800, inner: true });
             card.classList.add('shown');
             await wait(150);
 
             // 2) Avatar
-            setTool('ellipse', 'Avatar');
+            setTool('ellipse', 'Avatar çiziliyor');
             await drag(avatar, 'Ellipse · Avatar', { dur: 500, round: true });
             avatar.classList.add('shown');
             await wait(450);
@@ -1095,29 +1108,29 @@
             // 3) Başlıklar — önce metin kutusu çizilir, sonra kalemle içine yazılır
             setTool('text', 'Metin kutusu');
             await drag($('#name'), 'Text · Başlık', { dur: 420, text: true });
-            setTool('pen', 'Başlık');
+            setTool('pen', 'İsim yazılıyor');
             await write($('#name'), 1700);
             setTool('text', 'Metin kutusu');
             await drag($('#role'), 'Text · Alt başlık', { dur: 320, text: true });
-            setTool('pen', 'Alt başlık');
+            setTool('pen', 'Başlık yazılıyor');
             await write($('#role'), 950);
 
             // 4) Hakkımda metni — kutu + kalem
             setTool('text', 'Metin kutusu');
             await drag($('#bio'), 'Text · Hakkımda', { dur: 520, text: true });
-            setTool('pen', 'Hakkımda');
+            setTool('pen', 'Metin yazılıyor');
             await write($('#bio'), 6200);
 
             // 5) Sosyal medya
-            setTool('frame', 'Sosyal');
+            setTool('frame', 'Sosyal medya');
             const socials = $('#socials');
             await drag(socials, 'Frame · Sosyal', { dur: 450 });
             socials.classList.add('shown');
-            setTool('ellipse', 'İkonlar');
+            setTool('move', 'İkonlar ekleniyor');
             await tapEach($$('.social-btn'), 200);
 
             // 6) Buton
-            setTool('rect', 'Buton');
+            setTool('rect', 'Buton çiziliyor');
             const cta = $('#cta');
             await drag(cta, 'Button · İletişim', { dur: 450 });
             cta.classList.add('shown');
@@ -1133,19 +1146,53 @@
 
         if (!reduced) run();
 
-        /* ---------- Kopyalama koruması ---------- */
-        const block = (e) => e.preventDefault();
-        ['contextmenu', 'copy', 'cut', 'selectstart', 'dragstart'].forEach((ev) => document.addEventListener(ev, block));
-        document.addEventListener('keydown', (e) => {
+        /* ---------- Kopyalama koruması (eklentilere karşı katmanlı) ---------- */
+        // 1) Olaylar en erken aşamada (window, capture) yakalanır ve durdurulur
+        const stop = (e) => {
+            if ((e.type === 'copy' || e.type === 'cut') && e.clipboardData) {
+                try { e.clipboardData.setData('text/plain', ''); e.clipboardData.setData('text/html', ''); } catch (_) {}
+            }
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false;
+        };
+        const EVENTS = ['contextmenu', 'copy', 'cut', 'selectstart', 'dragstart', 'beforecopy'];
+        [window, document].forEach((t) => EVENTS.forEach((ev) => t.addEventListener(ev, stop, { capture: true })));
+
+        const blockKeys = (e) => {
             const k = (e.key || '').toLowerCase();
             const mod = e.ctrlKey || e.metaKey;
-            if (k === 'f12' ||
+            if (k === 'f12' || k === 'printscreen' ||
                 (mod && ['c', 'x', 'a', 'u', 's', 'p'].includes(k)) ||
-                (mod && e.shiftKey && ['i', 'j', 'c'].includes(k)) ||
+                (mod && e.shiftKey && ['i', 'j', 'c', 'k'].includes(k)) ||
                 (e.metaKey && e.altKey && ['i', 'j', 'c', 'u'].includes(k))) {
                 e.preventDefault();
+                e.stopImmediatePropagation();
             }
-        });
+        };
+        window.addEventListener('keydown', blockKeys, { capture: true });
+
+        // 2) Bir şekilde metin seçilirse anında temizlenir
+        const killSelection = () => {
+            const sel = window.getSelection && window.getSelection();
+            if (sel && sel.rangeCount && !sel.isCollapsed) sel.removeAllRanges();
+        };
+        document.addEventListener('selectionchange', killSelection);
+
+        // 3) Eklentiler stilleri/olayları sıfırlarsa koruma kendini yeniden kurar
+        const guardCSS = document.createElement('style');
+        guardCSS.textContent = '*,*::before,*::after{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}img{pointer-events:none!important;-webkit-user-drag:none!important}@media print{body{display:none!important}}';
+        const ensureGuard = () => {
+            if (document.head.lastElementChild !== guardCSS) document.head.appendChild(guardCSS);
+            ['oncontextmenu', 'oncopy', 'oncut', 'onselectstart', 'ondragstart'].forEach((h) => {
+                if (document[h] !== stop) document[h] = stop;
+                if (document.body && document.body[h] !== stop) document.body[h] = stop;
+            });
+        };
+        ensureGuard();
+        new MutationObserver(() => { if (!guardCSS.isConnected) ensureGuard(); })
+            .observe(document.documentElement, { childList: true, subtree: true });
+        setInterval(() => { ensureGuard(); killSelection(); }, 500);
 
         /* ---------- Animasyondan sonra: "inspect" hover efekti ---------- */
         if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
