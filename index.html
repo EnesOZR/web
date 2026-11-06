@@ -5,23 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>oz3R</title>
     <meta name="description" content="Enes 'oz3R' Özer — bilgisayar programcılığı, veritabanı ve yapay zeka meraklısı.">
-    <meta name="theme-color" content="#07090a">
+    <meta name="theme-color" content="#060607">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
     <script>document.documentElement.classList.add('js');</script>
     <style>
         :root {
-            --bg: #07090a;
-            --bg-2: #0d1112;
-            --card: rgba(16, 20, 22, 0.9);
+            --bg: #060607;
+            --bg-2: #0e0e10;
+            --card: rgba(14, 14, 16, 0.82);
             --line: rgba(255, 255, 255, 0.09);
-            --line-2: rgba(255, 255, 255, 0.18);
-            --text: #f2f5f3;
-            --muted: #9aa5a0;
-            --accent: #4ade80;
-            --accent-2: #86efac;
-            --accent-dim: rgba(74, 222, 128, 0.14);
+            --line-2: rgba(255, 255, 255, 0.2);
+            --text: #f4f4f5;
+            --muted: #a1a1aa;
+            --accent: #ffffff;
+            --accent-2: #d4d4d8;
+            --ink: #0b0b0c;
             --radius: 22px;
             --mono: 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
             --display: 'Space Grotesk', system-ui, sans-serif;
@@ -54,9 +54,43 @@
             inset: 0;
             z-index: 0;
             pointer-events: none;
-            background:
-                radial-gradient(circle at 50% -10%, rgba(74, 222, 128, 0.10), transparent 55%),
-                radial-gradient(circle at 100% 100%, rgba(74, 222, 128, 0.06), transparent 45%);
+            overflow: hidden;
+            background: radial-gradient(ellipse at 50% 0%, #1a1a1d 0%, var(--bg) 70%);
+        }
+
+        /* Yavaşça süzülen beyaz ışık hareleri — yalnızca transform/opacity (GPU) */
+        .canvas-bg .orb {
+            position: absolute;
+            width: 72vmax;
+            height: 72vmax;
+            border-radius: 50%;
+            background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05) 55%, transparent);
+            will-change: transform;
+        }
+
+        .canvas-bg .o1 { left: -28vmax; top: -34vmax; animation: drift1 16s ease-in-out infinite alternate; }
+        .canvas-bg .o2 { right: -30vmax; top: 6vmax; width: 60vmax; height: 60vmax; opacity: 0.8; animation: drift2 20s ease-in-out infinite alternate; }
+        .canvas-bg .o3 { left: 10vmax; bottom: -46vmax; width: 66vmax; height: 66vmax; opacity: 0.7; animation: drift3 24s ease-in-out infinite alternate; }
+
+        @keyframes drift1 { to { transform: translate(34vmax, 22vmax) scale(1.15); } }
+        @keyframes drift2 { to { transform: translate(-30vmax, 18vmax) scale(0.85); } }
+        @keyframes drift3 { to { transform: translate(18vmax, -26vmax) scale(1.2); } }
+
+        /* Çapraz geçen ışık şeridi */
+        .canvas-bg .beam {
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(115deg, transparent 46%, rgba(255, 255, 255, 0.06) 50%, transparent 54%);
+            animation: sweep 7s cubic-bezier(.45, 0, .25, 1) infinite;
+            will-change: transform;
+        }
+
+        @keyframes sweep {
+            0% { transform: translateX(-35%); }
+            60%, 100% { transform: translateX(35%); }
         }
 
         .canvas-bg::before {
@@ -67,7 +101,10 @@
             background-size: 24px 24px;
             mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
             -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 85%);
+            animation: gridPulse 5s ease-in-out infinite;
         }
+
+        @keyframes gridPulse { 50% { opacity: 0.45; } }
 
         .ruler {
             position: fixed;
@@ -113,7 +150,7 @@
             z-index: 1;
             pointer-events: none;
             opacity: 0;
-            background: radial-gradient(circle closest-side, rgba(134, 239, 172, 0.09), transparent);
+            background: radial-gradient(circle closest-side, rgba(255, 255, 255, 0.09), transparent);
             transition: opacity 0.6s ease;
             will-change: transform;
         }
@@ -171,7 +208,7 @@
             position: absolute;
             inset: -7px;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, var(--accent), transparent 30%, var(--accent-2) 55%, transparent 80%, var(--accent));
+            background: conic-gradient(from 0deg, #fff, transparent 30%, #71717a 55%, transparent 80%, #fff);
             animation: spin 8s linear infinite;
             opacity: 0.85;
         }
@@ -211,8 +248,8 @@
         }
 
         .name .nick {
-            color: var(--accent);
-            text-shadow: 0 0 24px rgba(74, 222, 128, 0.45);
+            color: #fff;
+            text-shadow: 0 0 22px rgba(255, 255, 255, 0.55);
         }
 
         .w { display: inline-block; white-space: nowrap; }
@@ -292,7 +329,7 @@
             color: var(--bg);
             background: var(--accent);
             border-color: var(--accent);
-            box-shadow: 0 10px 24px -8px rgba(74, 222, 128, 0.7);
+            box-shadow: 0 10px 24px -10px rgba(255, 255, 255, 0.45);
             outline: none;
         }
 
@@ -311,9 +348,9 @@
             font-size: clamp(12.5px, 3.9vw, 15px);
             white-space: nowrap;
             text-decoration: none;
-            color: #04130a;
-            background: linear-gradient(135deg, var(--accent-2), var(--accent));
-            box-shadow: 0 14px 34px -12px rgba(74, 222, 128, 0.75), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+            color: var(--ink);
+            background: linear-gradient(135deg, #ffffff, #d4d4d8);
+            box-shadow: 0 14px 34px -14px rgba(255, 255, 255, 0.45), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
             overflow: hidden;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
         }
@@ -322,7 +359,7 @@
 
         .cta:hover, .cta:focus-visible {
             transform: translateY(-2px);
-            box-shadow: 0 18px 40px -12px rgba(74, 222, 128, 0.95), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+            box-shadow: 0 18px 44px -12px rgba(255, 255, 255, 0.6), 0 1px 0 rgba(255, 255, 255, 0.8) inset;
             outline: none;
         }
 
@@ -332,7 +369,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+            background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.85) 50%, transparent 70%);
             transform: translateX(-120%);
             animation: shine 4.5s ease-in-out 2s infinite;
         }
@@ -393,7 +430,7 @@
         }
 
         .tool svg { width: 17px; height: 17px; }
-        .tool.active { background: var(--accent); color: #04130a; }
+        .tool.active { background: var(--accent); color: var(--ink); }
 
         .tb-sep { width: 1px; height: 22px; background: var(--line-2); margin: 0 4px; flex: none; }
 
@@ -433,7 +470,7 @@
         .sel {
             position: absolute;
             border: 1.5px solid var(--accent);
-            background: rgba(74, 222, 128, 0.05);
+            background: rgba(255, 255, 255, 0.05);
             transition: opacity 0.4s ease;
         }
 
@@ -442,16 +479,19 @@
             inset: 0;
             border-radius: 50%;
             border: 1.5px solid var(--accent);
-            background: rgba(74, 222, 128, 0.08);
+            background: rgba(255, 255, 255, 0.08);
         }
 
-        .sel.round { border-style: dashed; border-color: rgba(74, 222, 128, 0.6); background: transparent; }
+        .sel.round { border-style: dashed; border-color: rgba(255, 255, 255, 0.55); background: transparent; }
+        .sel.text { border-style: dashed; background: rgba(255, 255, 255, 0.03); }
+        .sel.text .lbl { top: auto; bottom: -24px; }
+        .sel.text .dim { left: auto; right: -1.5px; bottom: -24px; transform: none; }
 
         .sel .h {
             position: absolute;
             width: 8px; height: 8px;
             background: #fff;
-            border: 1.5px solid var(--accent);
+            border: 1.5px solid #52525b;
             border-radius: 2px;
         }
 
@@ -470,7 +510,7 @@
             padding: 4px 6px;
             border-radius: 4px;
             background: var(--accent);
-            color: #04130a;
+            color: var(--ink);
             white-space: nowrap;
         }
 
@@ -483,8 +523,8 @@
             line-height: 1;
             padding: 4px 6px;
             border-radius: 4px;
-            background: #fff;
-            color: #04130a;
+            background: #27272a;
+            color: #fff;
             white-space: nowrap;
         }
 
@@ -549,7 +589,7 @@
             padding: 4px 8px;
             border-radius: 2px 8px 8px 8px;
             background: var(--accent);
-            color: #04130a;
+            color: var(--ink);
             white-space: nowrap;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
@@ -579,8 +619,8 @@
         .ch.ink { animation: ink 0.7s ease-out; }
 
         @keyframes ink {
-            0% { opacity: 0; color: var(--accent); }
-            35% { opacity: 1; color: var(--accent-2); }
+            0% { opacity: 0; color: #fff; }
+            35% { opacity: 1; color: #fff; }
             100% { opacity: 1; }
         }
 
@@ -608,7 +648,7 @@
             position: fixed;
             z-index: 30;
             pointer-events: none;
-            border: 1px solid rgba(74, 222, 128, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.55);
             border-radius: 6px;
             opacity: 0;
             transition: opacity 0.2s ease, left 0.18s ease, top 0.18s ease, width 0.18s ease, height 0.18s ease;
@@ -623,8 +663,8 @@
             font-size: 10px;
             padding: 3px 6px;
             border-radius: 4px;
-            background: rgba(74, 222, 128, 0.9);
-            color: #04130a;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--ink);
             white-space: nowrap;
         }
 
@@ -673,7 +713,7 @@
     </style>
 </head>
 <body>
-    <div class="canvas-bg" aria-hidden="true"></div>
+    <div class="canvas-bg" aria-hidden="true"><i class="orb o1"></i><i class="orb o2"></i><i class="orb o3"></i><i class="beam"></i></div>
     <div class="mouse-glow" id="glow" aria-hidden="true"></div>
     <div class="ruler top" aria-hidden="true"></div>
     <div class="ruler left" aria-hidden="true"></div>
@@ -733,23 +773,23 @@
         <span class="tool" data-tool="move"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 3l14 7-6 2-2 6z"/></svg></span>
         <span class="tool" data-tool="frame"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 3v18M17 3v18M3 7h18M3 17h18"/></svg></span>
         <span class="tool opt" data-tool="rect"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="5" width="16" height="14" rx="2"/></svg></span>
-        <span class="tool" data-tool="ellipse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></span>
+        <span class="tool opt" data-tool="ellipse"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/></svg></span>
         <span class="tool" data-tool="pen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><circle cx="11" cy="11" r="2"/></svg></span>
-        <span class="tool opt" data-tool="text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg></span>
+        <span class="tool" data-tool="text"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 6V4h14v2M12 4v16M9 20h6"/></svg></span>
         <span class="tb-sep"></span>
         <span class="tb-status" id="status">Hazırlanıyor…</span>
     </div>
 
     <div class="fx" id="fx" aria-hidden="true">
         <div class="cursor" id="cursor">
-            <svg class="ptr" viewBox="0 0 24 28"><path d="M3 2v20.5l5.2-4.9 3.6 8.1 3.4-1.5-3.6-8h7.2z" fill="#fff" stroke="#04130a" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            <svg class="ptr" viewBox="0 0 24 28"><path d="M3 2v20.5l5.2-4.9 3.6 8.1 3.4-1.5-3.6-8h7.2z" fill="#fff" stroke="#0b0b0c" stroke-width="1.6" stroke-linejoin="round"/></svg>
             <svg class="nib" viewBox="0 0 40 40">
-                <g transform="translate(3 37) rotate(38) translate(-16 -31)" stroke="#04130a" stroke-width="1.2" stroke-linejoin="round">
-                    <rect x="11.5" y="-1" width="9" height="16" rx="3.5" fill="#4ade80"/>
+                <g transform="translate(3 37) rotate(38) translate(-16 -31)" stroke="#0b0b0c" stroke-width="1.2" stroke-linejoin="round">
+                    <rect x="11.5" y="-1" width="9" height="16" rx="3.5" fill="#f4f4f5"/>
                     <rect x="12.5" y="14.5" width="7" height="4" rx="1" fill="#1d2528"/>
                     <path d="M12.5 18.5h7l-1 5.5-2.5 7-2.5-7z" fill="#e8ecea"/>
                     <path d="M16 23.5v6" stroke-width="1"/>
-                    <circle cx="16" cy="22.6" r="1" fill="#04130a" stroke="none"/>
+                    <circle cx="16" cy="22.6" r="1" fill="#0b0b0c" stroke="none"/>
                 </g>
             </svg>
             <span class="tag">oz3R</span>
@@ -916,13 +956,24 @@
             });
         }
 
-        async function drag(el, label, { dur = 700, round = false } = {}) {
+        // Metnin kapladığı gerçek alan (tüm harflerin sınırları)
+        function textBox(el) {
+            let l = Infinity, t = Infinity, r = -Infinity, btm = -Infinity;
+            $$('.ch', el).forEach((c) => {
+                const q = c.getBoundingClientRect();
+                l = Math.min(l, q.left); t = Math.min(t, q.top); r = Math.max(r, q.right); btm = Math.max(btm, q.bottom);
+            });
+            const pad = 6;
+            return { x: l - pad + scrollX, y: t - pad + scrollY, w: r - l + pad * 2, h: btm - t + pad * 2 };
+        }
+
+        async function drag(el, label, { dur = 700, round = false, text = false } = {}) {
             clearSel();
-            const b = box(el);
+            const b = text ? textBox(el) : box(el);
             await moveTo(b.x, b.y, 420);
             cursor.classList.add('down');
             const s = document.createElement('div');
-            s.className = 'sel' + (round ? ' round' : '');
+            s.className = 'sel' + (round ? ' round' : '') + (text ? ' text' : '');
             s.style.left = b.x + 'px';
             s.style.top = b.y + 'px';
             s.innerHTML = (round ? '<div class="shape"></div>' : '') +
@@ -1032,13 +1083,20 @@
             await wait(450);
             clearSel();
 
-            // 3) Başlıklar — kalemle yazılır
-            setTool('pen', 'Başlık yazılıyor');
+            // 3) Başlıklar — önce metin kutusu çizilir, sonra kalemle içine yazılır
+            setTool('text', 'Metin kutusu');
+            await drag($('#name'), 'Text · Başlık', { dur: 420, text: true });
+            setTool('pen', 'Başlık');
             await write($('#name'), 1700);
+            setTool('text', 'Metin kutusu');
+            await drag($('#role'), 'Text · Alt başlık', { dur: 320, text: true });
+            setTool('pen', 'Alt başlık');
             await write($('#role'), 950);
 
-            // 4) Hakkımda metni — kalemle yazılır
-            setTool('pen', 'Metin yazılıyor');
+            // 4) Hakkımda metni — kutu + kalem
+            setTool('text', 'Metin kutusu');
+            await drag($('#bio'), 'Text · Hakkımda', { dur: 520, text: true });
+            setTool('pen', 'Hakkımda');
             await write($('#bio'), 6200);
 
             // 5) Sosyal medya
