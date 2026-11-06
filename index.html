@@ -42,9 +42,14 @@
             -webkit-font-smoothing: antialiased;
             display: flex;
             flex-direction: column;
+            /* İçerik seçilip kopyalanamasın */
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        img { -webkit-user-drag: none; user-select: none; }
+        img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 
         a { color: inherit; }
 
@@ -603,6 +608,9 @@
 
         .intro footer { opacity: 0; }
 
+        /* Animasyon bitene kadar görünmeyen öğeler tıklanamasın */
+        .intro main, .intro footer { pointer-events: none; }
+
         .intro .avatar:not(.shown)::before,
         .intro .avatar:not(.shown)::after { opacity: 0; }
 
@@ -1123,6 +1131,20 @@
         }
 
         if (!reduced) run();
+
+        /* ---------- Kopyalama koruması ---------- */
+        const block = (e) => e.preventDefault();
+        ['contextmenu', 'copy', 'cut', 'selectstart', 'dragstart'].forEach((ev) => document.addEventListener(ev, block));
+        document.addEventListener('keydown', (e) => {
+            const k = (e.key || '').toLowerCase();
+            const mod = e.ctrlKey || e.metaKey;
+            if (k === 'f12' ||
+                (mod && ['c', 'x', 'a', 'u', 's', 'p'].includes(k)) ||
+                (mod && e.shiftKey && ['i', 'j', 'c'].includes(k)) ||
+                (e.metaKey && e.altKey && ['i', 'j', 'c', 'u'].includes(k))) {
+                e.preventDefault();
+            }
+        });
 
         /* ---------- Animasyondan sonra: "inspect" hover efekti ---------- */
         if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
